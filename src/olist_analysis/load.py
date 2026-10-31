@@ -28,7 +28,7 @@ DATE_COLUMNS = {
 TEXT_COLUMNS = {
     "customer": ["customer_id","customer_unique_id","customer_zip_code_prefix","customer_city","customer_state"],
     "geolocation": ['geolocation_zip_code_prefix','geolocation_city','geolocation_state'],
-    "order_items": ['order_id','order_item_id','product_id','seller_id'],
+    "order_items": ['order_id','product_id','seller_id'],
     "order_payments": ['order_id','payment_type	'],
     "order_reviews": ['review_id','order_id','review_comment_title','review_comment_message'],
     "orders": ['order_id','customer_id','order_status'],
