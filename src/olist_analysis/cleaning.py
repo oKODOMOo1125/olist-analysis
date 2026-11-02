@@ -1,6 +1,7 @@
 """ล้างข้อมูล Olist: แปลงค่าให้ถูกชนิด และติดธงค่าที่เป็นไปไม่ได้"""
 
 import math 
+import pandas as pd
 
 def clean_price(value:object) -> float|None:
     # เครื่องมือสำหรับ clean colunm เกี่ยวกับราคาให้ เป็น float ทั้งหมด 
@@ -36,3 +37,9 @@ def delivery_status(days_late: float|None) -> str:
     else:
         return 'late_8d_plus'
 
+
+def require_columns(df: pd.DataFrame, columns: list[str]) -> None:
+    """หยุดทันทีถ้า df ขาดคอลัมน์ที่ต้องใช้ และบอกชื่อทุกตัวที่ขาด"""
+    missing = [c for c in columns if c not in df.columns]
+    if missing:
+        raise KeyError(f'missing columns: {missing}')
