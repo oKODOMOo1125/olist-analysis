@@ -43,3 +43,26 @@ def require_columns(df: pd.DataFrame, columns: list[str]) -> None:
     missing = [c for c in columns if c not in df.columns]
     if missing:
         raise KeyError(f'missing columns: {missing}')
+
+
+def clean_order_dates(df:pd.DataFrame)->pd.DataFrame:
+    """เพิ่มคอลัมน์เวลาส่งให้ตาราง orders โดย 1 แถว = 1 ออเดอร์ เหมือนเดิม"""
+    require_columns(df, [
+        'order_purchase_timestamp',
+        'order_delivered_customer_date',
+        'order_estimated_delivery_date'
+    ])
+    out = df.copy()
+
+    purchas = out['order_purchase_timestamp']
+    carrier = out['order_delivered_carrier_date']
+    delivered = out['order_delivered_customer_date']
+    estimated = out['order_estimated_delivery_date']
+
+    out['delivery_days'] = (delivered - purchas).dt.total_seconds() /86400
+    out['days_late'] = (delivered.dt.normalize() - estimated).dt.days
+    out['delivery_status'] = out['days_late'].map(delivery_status)
+    out['is_date_error'] = (delivered < purchas)| (delivered < carrier)
+
+    return out
+
