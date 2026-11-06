@@ -11,7 +11,15 @@ def clean_price(value:object) -> float|None:
         return None
     if isinstance(value, (int, float)):
         return None if math.isnan(value) else float(value)
-    text = str(value).strip().replace(',','' ).replace('฿','').replace('บาท','').strip()
+    text = str(value).strip().replace('฿','').replace('บาท','').strip()
+    if ',' in text and '.' in text:
+        if text.rfind(',') > text.rfind('.'):
+            text = text.replace('.','').replace(',','.')
+        else: 
+            text = text.replace(',','')
+    else:
+        text = text.replace(',','')
+
     if text == '':
         return None 
     try:
@@ -65,4 +73,5 @@ def clean_order_dates(df:pd.DataFrame)->pd.DataFrame:
     out['is_date_error'] = (delivered < purchas)| (delivered < carrier)
 
     return out
+
 
