@@ -50,11 +50,11 @@ INT_COLUMNS = {
 }
 
 
-def read_table(name: str, raw_dir: Path) -> pd.DataFrame:
+def read_table(name: str, raw_dir: Path, **kwargs) -> pd.DataFrame:
     '''อ่านไฟล์ CSV และแปลงชนิดข้อมูลตามที่กำหนดไว้'''
     file_path = Path(raw_dir) / RAW_FILES[name]
     dtype_01 = {col: 'string' for col in TEXT_COLUMNS[name]}
     dtype_02 = {col: 'Int64' for col in INT_COLUMNS[name]}
     dtype = {**dtype_01, **dtype_02}
-    return pd.read_csv(file_path, dtype=dtype, parse_dates= DATE_COLUMNS[name])
+    return pd.read_csv(file_path, dtype=dtype, parse_dates= DATE_COLUMNS[name], **kwargs)
     
