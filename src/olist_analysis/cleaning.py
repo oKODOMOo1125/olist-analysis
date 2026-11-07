@@ -75,3 +75,13 @@ def clean_order_dates(df:pd.DataFrame)->pd.DataFrame:
     return out
 
 
+def status_group(value):
+    match value:
+        case 'delivered':
+            return 'delivered'
+        case 'created' | 'approved' | 'invoiced' | 'processing' | 'shipped':
+            return 'in_progress'
+        case 'canceled' | 'unavailable':
+            return 'failed'
+        case _:
+            return 'unknown'
