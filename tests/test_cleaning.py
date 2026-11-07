@@ -63,3 +63,17 @@ def test_require_columns_names_missing_column():
 
 def test_clean_price_brazil_format():
     assert cleaning.clean_price("1.250,00") == 1250.0
+
+@pytest.mark.parametrize(
+    "status, expected",
+    [
+        ("delivered", "delivered"),
+        ("shipped", "in_progress"),
+        ("created", "in_progress"),
+        ("canceled", "failed"),
+        ("unavailable", "failed"),
+        ("lost_in_space", "unknown"),
+    ],
+)
+def test_status_group(status, expected):
+    assert cleaning.status_group(status) == expected
