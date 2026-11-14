@@ -21,4 +21,6 @@ reports/*.csv
 
 # ของเครื่อง
 .DS_Store
-.ipynb.checkpoints/
+.ipynb_checkpoints/
+.vscode/
+
