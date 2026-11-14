@@ -40,21 +40,21 @@ def make_orders() -> pd.DataFrame:
     })
 
 def test_clean_orders_keeps_hours():
-    out = cleaning.clean_order_dates(make_orders())
+    out = cleaning.clean_orders(make_orders())
     assert out.loc[0, 'delivery_days'] == pytest.approx(26/24)
 
 def test_clean_orders_keeps_undelivered_as_missing():
-    out = cleaning.clean_order_dates(make_orders())
+    out = cleaning.clean_orders(make_orders())
     assert pd.isna(out.loc[2, 'delivery_days'])
 
 def test_clean_orders_labels_and_flags():
-    out = cleaning.clean_order_dates(make_orders())
+    out = cleaning.clean_orders(make_orders())
     assert out['delivery_status'].to_list() == ["on_time", "late_1_7d", "unknown"]
     assert out['is_date_error'].to_list() == [False, True, False]
 
 def test_clean_orders_does_not_change_input():
     out = make_orders()
-    cleaning.clean_order_dates(out)
+    cleaning.clean_orders(out)
     assert 'delivery_day' not in out.columns
 
 def test_require_columns_names_missing_column():

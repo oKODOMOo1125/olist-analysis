@@ -53,7 +53,7 @@ def require_columns(df: pd.DataFrame, columns: list[str]) -> None:
         raise KeyError(f'missing columns: {missing}')
 
 
-def clean_order_dates(df:pd.DataFrame)->pd.DataFrame:
+def clean_orders(df:pd.DataFrame)->pd.DataFrame:
     """เพิ่มคอลัมน์เวลาส่งให้ตาราง orders โดย 1 แถว = 1 ออเดอร์ เหมือนเดิม"""
     require_columns(df, [
         'order_purchase_timestamp',
