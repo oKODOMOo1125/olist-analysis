@@ -77,3 +77,13 @@ def test_clean_price_brazil_format():
 )
 def test_status_group(status, expected):
     assert cleaning.status_group(status) == expected
+
+def test_latest_reviews_keeps_one_per_order_and_the_latest():
+    reviews = pd.DataFrame({
+        "order_id":    ["a", "a", "b"],
+        "review_score": [1, 5, 3],
+        "review_answer_timestamp": pd.to_datetime(["2018-01-02", "2018-01-05", "2018-01-03"]),
+    })
+    out = cleaning.latest_reviews(reviews)
+    assert len(out) == 2
+    assert out.set_index('order_id').loc['a', 'review_score'] == 5

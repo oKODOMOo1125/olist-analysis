@@ -85,3 +85,34 @@ def status_group(value):
             return 'failed'
         case _:
             return 'unknown'
+
+def latest_reviews(review: pd.DataFrame) -> pd.DataFrame:
+    '''กรองให้เหลือแต่ review ล่าสุดต่อออเดอร์เท่านั้น'''
+    return (review
+            .sort_values('review_answer_timestamp')
+            .drop_duplicates('order_id', keep='last')
+    
+)
+
+def build_order_table(orders: pd.DataFrame, reviews: pd.DataFrame,
+                      customers: pd.DataFrame, start: str, end: str
+                      ) -> tuple[pd.DataFrame, pd.Series]:
+    """รวม orders + รีวิวล่าสุด + รัฐลูกค้า แล้วกรองตามขอบเขต
+    คืน (ตาราง 1 แถว = 1 ออเดอร์ที่ส่งถึงและมีรีวิว, จำนวนแถวที่เหลือแต่ละขั้น)"""
+    merged = (clean_orders(orders)
+              .merge(latest_reviews(reviews)[["order_id", "review_score"]],
+                     on="order_id", how="left", validate="one_to_one")
+              .merge(customers[["customer_id", "customer_unique_id", "customer_state"]],
+                     on="customer_id", how="left", validate="one_to_one"))
+
+    steps = {"orders ทั้งหมด": len(merged)}
+    s = merged[merged["order_purchase_timestamp"].between(start, end, inclusive="left")]
+    steps["สั่งในช่วงขอบเขต"] = len(s)
+    s = s[s["delivery_days"].notna()]
+    steps["ส่งถึงลูกค้าแล้ว"] = len(s)
+    s = s[~s["is_date_error"]]
+    steps["วันที่เป็นไปได้"] = len(s)
+    s = s[s["review_score"].notna()]
+    steps["มีรีวิว"] = len(s)
+
+    return s.reset_index(drop=True), pd.Series(steps, name="n")
