@@ -38,7 +38,7 @@ def delivery_status(days_late: float|None) -> str:
     """
     if days_late is None or math.isnan(days_late):
         return 'unknown'
-    if days_late < 0:
+    if days_late <= 0:
         return  'on_time'
     elif  days_late <=7:
         return  'late_1_7d'
