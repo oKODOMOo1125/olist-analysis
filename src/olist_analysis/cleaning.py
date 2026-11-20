@@ -3,6 +3,8 @@
 import math 
 import pandas as pd
 
+LATE_GRACE_DAYS = 0 
+
 def clean_price(value:object) -> float|None:
     # เครื่องมือสำหรับ clean colunm เกี่ยวกับราคาให้ เป็น float ทั้งหมด 
     if value == None:
@@ -69,6 +71,8 @@ def clean_orders(df:pd.DataFrame)->pd.DataFrame:
 
     out['delivery_days'] = (delivered - purchas).dt.total_seconds() /86400
     out['days_late'] = (delivered.dt.normalize() - estimated).dt.days
+    out["is_late"] = (out["days_late"] > LATE_GRACE_DAYS).astype("boolean")
+    out.loc[out["days_late"].isna(), "is_late"] = pd.NA
     out['delivery_status'] = out['days_late'].map(delivery_status)
     out['is_date_error'] = (delivered < purchas)| (delivered < carrier)
 
