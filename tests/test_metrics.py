@@ -8,6 +8,7 @@ def test_rates_by_state():
         "customer_state": ["SP", "SP", "SP", "AM"],
         "delivery_days":  [5.0, 10.0, 30.0, 40.0],
         "days_late":      [-3, 2, 5, -10],
+        "is_late":        [False, True ,True, False],
         "review_score":   [5, 1, 1, 4],
     })
     out = metrics.rates_by(df, "customer_state", slow_cutoff=20, min_n=1).set_index("customer_state")
@@ -17,3 +18,4 @@ def test_rates_by_state():
     assert out.loc["SP", "late_rate"] == pytest.approx(2/3)
     assert out.loc["SP", "one_star_rate"] == pytest.approx(2/3)
     assert out.loc["AM", "slow_rate"] == 1.0
+   
