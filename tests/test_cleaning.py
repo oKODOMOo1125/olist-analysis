@@ -64,6 +64,11 @@ def test_require_columns_names_missing_column():
 def test_clean_price_brazil_format():
     assert cleaning.clean_price("1.250,00") == 1250.0
 
+def test_clean_orders_is_late_keeps_unknown_as_missing():
+    out = cleaning.clean_orders(make_orders())
+    assert out["is_late"].isna().tolist() == [False, False, True]
+    assert out["is_late"].iloc[:2].tolist() == [False, True]
+
 @pytest.mark.parametrize(
     "status, expected",
     [

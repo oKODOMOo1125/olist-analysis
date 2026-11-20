@@ -16,7 +16,7 @@ def rates_by(df: pd.DataFrame, *group_cols: str,
              .agg(n=("order_id", "size"),
                   median_days=("delivery_days", "median"),
                   slow_rate=("delivery_days", lambda x: (x > slow_cutoff).mean()),
-                  late_rate=("days_late", lambda x: (x > 0).mean()),
+                  late_rate=("is_late", "mean"),
                   one_star_rate=("review_score", lambda x: (x == 1).mean()))
              .reset_index())
     return out[out["n"] >= min_n]
