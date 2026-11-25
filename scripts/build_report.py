@@ -1,5 +1,5 @@
 from pathlib import Path 
-from olist_analysis import checks, cleaning, load, metrics
+from olist_analysis import checks, cleaning, load, metrics, plots
 from olist_analysis.config import ReportConfig, PROJECT_ROOT
 
 REPORTS = PROJECT_ROOT / 'reports'
@@ -50,6 +50,7 @@ def main():
     funnel.to_csv(REPORTS / 'funnel.csv', header=True)
     state_by.round(4).to_csv(REPORTS / 'rate_by_state.csv', index=False)
     month_rate.round(4).to_csv(REPORTS / 'rate_by_month.csv', index=False)
+    plots.one_star_by_days_late(df, REPORTS / 'one_star_by_days_late.png')
 
     q = df['delivery_days'].quantile([0.25, 0.5, 0.75, 0.9])
 
